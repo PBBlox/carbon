@@ -2,9 +2,9 @@ name: Slack Office Hours Reminder - Design
 
 on:
   workflow_dispatch:
-  schedule:
+  #schedule:
     # Run every Monday at 09:00AM CT, 02:00PM UTC
-    - cron: '0 14 * * MON'
+    #- cron: '0 14 * * MON'
 
 jobs:
   post-reminder:
