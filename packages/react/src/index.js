@@ -106,8 +106,9 @@ export {
   InlineNotification,
   NotificationActionButton,
   NotificationButton,
-  Callout as unstable__Callout,
-  Callout as unstable__StaticNotification,
+  Callout,
+  Callout as unstable__Callout, // TODO remove when telemetry shows zero usage, or in v12
+  Callout as unstable__StaticNotification, // TODO remove when telemetry shows zero usage, or in v12
 } from './components/Notification';
 export { NumberInput, NumberInputSkeleton } from './components/NumberInput';
 export { OrderedList } from './components/OrderedList';
@@ -335,3 +336,6 @@ export {
   ChatButton as unstable__ChatButton,
   ChatButtonSkeleton as unstable__ChatButtonSkeleton,
 } from './components/ChatButton';
+
+export { IconIndicator as unstable__IconIndicator } from './components/IconIndicator';
+export { ShapeIndicator as unstable__ShapeIndicator } from './components/ShapeIndicator';

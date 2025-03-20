@@ -1,5 +1,5 @@
 /**
- * Copyright IBM Corp. 2016, 2023
+ * Copyright IBM Corp. 2016, 2025
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
@@ -13,7 +13,7 @@ import React, {
 import PropTypes from 'prop-types';
 
 import classNames from 'classnames';
-import throttle from 'lodash.throttle';
+import { throttle } from 'es-toolkit/compat';
 
 import * as keys from '../../internal/keyboard/keys';
 import { matches } from '../../internal/keyboard';
@@ -635,20 +635,16 @@ class Slider extends PureComponent<SliderProps> {
   }
 
   /**
-   * Takes a value and ensures it fits to the steps of the range
-   * @param value
-   * @returns value of the nearest step
+   * Rounds a given value to the nearest step defined by the slider's `step`
+   * prop.
+   *
+   * @param value - The value to adjust to the nearest step. Defaults to `0`.
+   * @returns The value rounded to the precision determined by the step.
    */
-  nearestStepValue(value) {
-    const tempInput = document.createElement('input');
+  nearestStepValue(value = 0) {
+    const decimals = (this.props.step?.toString().split('.')[1] || '').length;
 
-    tempInput.type = 'range';
-    tempInput.min = `${this.props.min}`;
-    tempInput.max = `${this.props.max}`;
-    tempInput.step = `${this.props.step}`;
-    tempInput.value = `${value}`;
-
-    return parseFloat(tempInput.value);
+    return Number(value.toFixed(decimals));
   }
 
   /**
@@ -839,7 +835,11 @@ class Slider extends PureComponent<SliderProps> {
           ? this.state.value
           : this.state.valueUpper;
       const { value, left } = this.calcValue({
-        value: this.calcValueForDelta(currentValue, delta, this.props.step),
+        value: this.calcValueForDelta(
+          currentValue ?? this.props.min,
+          delta,
+          this.props.step
+        ),
       });
       this.setValueLeftForHandle(this.state.activeHandle, {
         value: this.nearestStepValue(value),
@@ -1111,21 +1111,22 @@ class Slider extends PureComponent<SliderProps> {
   };
 
   /**
-   * Given the current value, delta and step, calculate the new value.
+   * Calculates a new slider value based on the current value, a change delta,
+   * and a step.
    *
-   * @param {number} currentValue
-   *   Current value user is moving from.
-   * @param {number} delta
-   *   Movement from the current value. Can be positive or negative.
-   * @param {number} step
-   *   A value determining how much the value should increase/decrease by moving
-   *   the thumb by mouse.
+   * @param currentValue - The starting value from which the slider is moving.
+   * @param delta - The amount to adjust the current value by.
+   * @param step - The step. Defaults to `1`.
+   * @returns The new slider value, rounded to the same number of decimal places
+   *          as the step.
    */
-  calcValueForDelta = (currentValue, delta, step = 1) => {
-    return (
-      (delta > 0 ? Math.floor(currentValue / step) * step : currentValue) +
-      delta
-    );
+  calcValueForDelta = (currentValue: number, delta: number, step = 1) => {
+    const base =
+      delta > 0 ? Math.floor(currentValue / step) * step : currentValue;
+    const newValue = base + delta;
+    const decimals = (step.toString().split('.')[1] || '').length;
+
+    return Number(newValue.toFixed(decimals));
   };
 
   /**
@@ -1533,13 +1534,13 @@ class Slider extends PureComponent<SliderProps> {
                       }>
                       {twoHandles && !isRtl ? (
                         <>
-                          <LowerHandle />
-                          <LowerHandleFocus />
+                          <LowerHandle aria-label={ariaLabelInput} />
+                          <LowerHandleFocus aria-label={ariaLabelInput} />
                         </>
                       ) : twoHandles && isRtl ? (
                         <>
-                          <UpperHandle />
-                          <UpperHandleFocus />
+                          <UpperHandle aria-label={ariaLabelInputUpper} />
+                          <UpperHandleFocus aria-label={ariaLabelInputUpper} />
                         </>
                       ) : undefined}
                     </div>
@@ -1565,13 +1566,15 @@ class Slider extends PureComponent<SliderProps> {
                         }>
                         {twoHandles && !isRtl ? (
                           <>
-                            <UpperHandle />
-                            <UpperHandleFocus />
+                            <UpperHandle aria-label={ariaLabelInputUpper} />
+                            <UpperHandleFocus
+                              aria-label={ariaLabelInputUpper}
+                            />
                           </>
                         ) : twoHandles && isRtl ? (
                           <>
-                            <LowerHandle />
-                            <LowerHandleFocus />
+                            <LowerHandle aria-label={ariaLabelInput} />
+                            <LowerHandleFocus aria-label={ariaLabelInput} />
                           </>
                         ) : undefined}
                       </div>

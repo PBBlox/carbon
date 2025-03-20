@@ -1,11 +1,12 @@
 /**
- * Copyright IBM Corp. 2016, 2023
+ * Copyright IBM Corp. 2016, 2025
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
 import React, { useEffect, useRef, useState } from 'react';
+import { View, FolderOpen, Folders, Information } from '@carbon/icons-react';
 import { action } from '@storybook/addon-actions';
 
 import { WithLayer } from '../../../.storybook/templates/WithLayer';
@@ -17,7 +18,14 @@ import Button from '../Button';
 import ButtonSet from '../ButtonSet';
 import { AILabel, AILabelContent, AILabelActions } from '../AILabel';
 import { IconButton } from '../IconButton';
-import { View, FolderOpen, Folders } from '@carbon/icons-react';
+import {
+  Toggletip,
+  ToggletipActions,
+  ToggletipButton,
+  ToggletipContent,
+  ToggletipLabel,
+} from '../Toggletip';
+import Link from '../Link';
 
 export default {
   title: 'Components/MultiSelect',
@@ -116,37 +124,7 @@ const items = [
   },
 ];
 
-export const Playground = (args) => {
-  const ref = useRef();
-  useEffect(() => {
-    ref?.current?.scrollIntoView({ block: 'center', inline: 'center' });
-  });
-  return (
-    <div style={{ width: '5000px', height: '5000px' }}>
-      <div
-        style={{
-          position: 'absolute',
-          top: '2500px',
-          left: '2500px',
-          width: 300,
-        }}>
-        <MultiSelect
-          label="Multiselect Label"
-          id="carbon-multiselect-example"
-          titleText="Multiselect title"
-          helperText="This is helper text"
-          items={items}
-          itemToString={(item) => (item ? item.text : '')}
-          selectionFeedback="top-after-reopen"
-          ref={ref}
-          {...args}
-        />
-      </div>
-    </div>
-  );
-};
-
-Playground.args = {
+const sharedArgs = {
   size: 'md',
   autoAlign: false,
   type: 'default',
@@ -166,7 +144,7 @@ Playground.args = {
   selectAllItemText: 'All options',
 };
 
-Playground.argTypes = {
+const sharedArgTypes = {
   selectionFeedback: {
     options: ['top', 'fixed', 'top-after-reopen'],
     control: { type: 'select' },
@@ -243,7 +221,34 @@ Playground.argTypes = {
   },
 };
 
-export const Default = () => {
+export const Default = (args) => {
+  const items = [
+    {
+      id: 'downshift-1-item-0',
+      text: 'Option 1',
+    },
+    {
+      id: 'downshift-1-item-1',
+      text: 'Option 2',
+    },
+    {
+      id: 'downshift-1-item-2',
+      text: 'Option 3 - a disabled item',
+      disabled: true,
+    },
+    {
+      id: 'downshift-1-item-3',
+      text: 'Option 4',
+    },
+    {
+      id: 'downshift-1-item-4',
+      text: 'An example option that is really long to show what should be done to handle long text',
+    },
+    {
+      id: 'downshift-1-item-5',
+      text: 'Option 5',
+    },
+  ];
   return (
     <div
       style={{
@@ -257,12 +262,43 @@ export const Default = () => {
         items={items}
         itemToString={(item) => (item ? item.text : '')}
         selectionFeedback="top-after-reopen"
+        {...args}
       />
     </div>
   );
 };
 
-export const WithInitialSelectedItems = () => {
+Default.args = { ...sharedArgs };
+Default.argTypes = { ...sharedArgTypes };
+
+export const WithInitialSelectedItems = (args) => {
+  const items = [
+    {
+      id: 'downshift-1-item-0',
+      text: 'Option 1',
+    },
+    {
+      id: 'downshift-1-item-1',
+      text: 'Option 2',
+    },
+    {
+      id: 'downshift-1-item-2',
+      text: 'Option 3 - a disabled item',
+      disabled: true,
+    },
+    {
+      id: 'downshift-1-item-3',
+      text: 'Option 4',
+    },
+    {
+      id: 'downshift-1-item-4',
+      text: 'An example option that is really long to show what should be done to handle long text',
+    },
+    {
+      id: 'downshift-1-item-5',
+      text: 'Option 5',
+    },
+  ];
   return (
     <div
       style={{
@@ -277,12 +313,40 @@ export const WithInitialSelectedItems = () => {
         itemToString={(item) => (item ? item.text : '')}
         initialSelectedItems={[items[0], items[1]]}
         selectionFeedback="top-after-reopen"
+        {...args}
       />
     </div>
   );
 };
 
 export const Filterable = (args) => {
+  const items = [
+    {
+      id: 'downshift-1-item-0',
+      text: 'Option 1',
+    },
+    {
+      id: 'downshift-1-item-1',
+      text: 'Option 2',
+    },
+    {
+      id: 'downshift-1-item-2',
+      text: 'Option 3 - a disabled item',
+      disabled: true,
+    },
+    {
+      id: 'downshift-1-item-3',
+      text: 'Option 4',
+    },
+    {
+      id: 'downshift-1-item-4',
+      text: 'An example option that is really long to show what should be done to handle long text',
+    },
+    {
+      id: 'downshift-1-item-5',
+      text: 'Option 5',
+    },
+  ];
   return (
     <div
       style={{
@@ -310,7 +374,7 @@ Filterable.argTypes = {
   },
 };
 
-export const WithLayerMultiSelect = () => (
+export const WithLayerMultiSelect = (args) => (
   <WithLayer>
     {(layer) => (
       <div style={{ width: 300 }}>
@@ -322,13 +386,14 @@ export const WithLayerMultiSelect = () => (
           items={items}
           itemToString={(item) => (item ? item.text : '')}
           selectionFeedback="top-after-reopen"
+          {...args}
         />
       </div>
     )}
   </WithLayer>
 );
 
-export const _FilterableWithLayer = () => (
+export const _FilterableWithLayer = (args) => (
   <WithLayer>
     {(layer) => (
       <div style={{ width: 300 }}>
@@ -339,13 +404,14 @@ export const _FilterableWithLayer = () => (
           items={items}
           itemToString={(item) => (item ? item.text : '')}
           selectionFeedback="top-after-reopen"
+          {...args}
         />
       </div>
     )}
   </WithLayer>
 );
 
-export const _Controlled = () => {
+export const _Controlled = (args) => {
   const [selectedItems, setSelectedItems] = useState(
     items.filter((item) => item.id === 'downshift-1-item-0')
   );
@@ -366,6 +432,7 @@ export const _Controlled = () => {
         onChange={(data) => onSelectionChanged(data.selectedItems)}
         itemToString={(item) => (item ? item.text : '')}
         selectionFeedback="top-after-reopen"
+        {...args}
       />
       <br />
       <ButtonSet>
@@ -412,7 +479,7 @@ const itemsWithSelectAll = [
   },
 ];
 
-export const SelectAll = () => {
+export const SelectAll = (args) => {
   const [label, setLabel] = useState('Choose options');
 
   const onChange = (value) => {
@@ -436,6 +503,7 @@ export const SelectAll = () => {
         itemToString={(item) => (item ? item.text : '')}
         selectionFeedback="top-after-reopen"
         onChange={onChange}
+        {...args}
       />
     </div>
   );
@@ -487,7 +555,7 @@ export const withAILabel = () => (
   </div>
 );
 
-export const FilterableWithAILabel = () => (
+export const FilterableWithAILabel = (args) => (
   <div style={{ width: 400 }}>
     <FilterableMultiSelect
       label="Multiselect Label"
@@ -498,11 +566,12 @@ export const FilterableWithAILabel = () => (
       itemToString={(item) => (item ? item.text : '')}
       selectionFeedback="top-after-reopen"
       decorator={aiLabel}
+      {...args}
     />
   </div>
 );
 
-export const ExperimentalAutoAlign = () => {
+export const ExperimentalAutoAlign = (args) => {
   const ref = useRef();
   useEffect(() => {
     ref?.current?.scrollIntoView({ block: 'center', inline: 'center' });
@@ -526,8 +595,48 @@ export const ExperimentalAutoAlign = () => {
           selectionFeedback="top-after-reopen"
           ref={ref}
           autoAlign
+          {...args}
         />
       </div>
+    </div>
+  );
+};
+
+ExperimentalAutoAlign.argTypes = { ...sharedArgTypes };
+
+export const withToggletipLabel = (args) => {
+  return (
+    <div>
+      <MultiSelect
+        label="Multiselect Label"
+        id="carbon-multiselect-example"
+        titleText={
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <ToggletipLabel>Multiselect title</ToggletipLabel>
+            <Toggletip>
+              <ToggletipButton label="Show information">
+                <Information />
+              </ToggletipButton>
+              <ToggletipContent>
+                <p>
+                  Lorem ipsum dolor sit amet, di os consectetur adipiscing elit,
+                  sed do eiusmod tempor incididunt ut fsil labore et dolore
+                  magna aliqua.
+                </p>
+                <ToggletipActions>
+                  <Link href="#">Link action</Link>
+                  <Button size="sm">Button</Button>
+                </ToggletipActions>
+              </ToggletipContent>
+            </Toggletip>
+          </div>
+        }
+        helperText="This is helper text"
+        items={items}
+        itemToString={(item) => (item ? item.text : '')}
+        selectionFeedback="top-after-reopen"
+        {...args}
+      />
     </div>
   );
 };

@@ -51,14 +51,14 @@ describe('Tile', () => {
     it('should respect decorator prop', () => {
       render(<Tile decorator={<AILabel />}>Default tile</Tile>);
       expect(
-        screen.getByRole('button', { name: 'AI - Show information' })
+        screen.getByRole('button', { name: 'AI Show information' })
       ).toBeInTheDocument();
     });
     it('should respect deprecated slug prop', () => {
       const spy = jest.spyOn(console, 'warn').mockImplementation(() => {});
       render(<Tile slug={<AILabel />}>Default tile</Tile>);
       expect(
-        screen.getByRole('button', { name: 'AI - Show information' })
+        screen.getByRole('button', { name: 'AI Show information' })
       ).toBeInTheDocument();
       spy.mockRestore();
     });
@@ -186,7 +186,7 @@ describe('Tile', () => {
         </SelectableTile>
       );
       const aiLabel = screen.getByRole('button', {
-        name: 'AI - Show information',
+        name: 'AI Show information',
       });
       expect(aiLabel).toBeInTheDocument();
       const tile = container.firstChild;
@@ -202,7 +202,7 @@ describe('Tile', () => {
         </SelectableTile>
       );
       expect(
-        screen.getByRole('button', { name: 'AI - Show information' })
+        screen.getByRole('button', { name: 'AI Show information' })
       ).toBeInTheDocument();
       spy.mockRestore();
     });
@@ -352,7 +352,7 @@ describe('Tile', () => {
         </ExpandableTile>
       );
       expect(
-        screen.getByRole('button', { name: 'AI - Show information' })
+        screen.getByRole('button', { name: 'AI Show information' })
       ).toBeInTheDocument();
     });
 
@@ -369,7 +369,7 @@ describe('Tile', () => {
         </ExpandableTile>
       );
       expect(
-        screen.getByRole('button', { name: 'AI - Show information' })
+        screen.getByRole('button', { name: 'AI Show information' })
       ).toBeInTheDocument();
       spy.mockRestore();
     });
@@ -480,6 +480,36 @@ describe('Tile', () => {
     expect(tile).toHaveClass(`${prefix}--tile--is-selected`);
     await userEvent.click(tile);
     expect(tile).not.toHaveClass(`${prefix}--tile--is-selected`);
+  });
+
+  it('SelectableTile Should call onChange with correct values', async () => {
+    const onChange = jest.fn();
+    const { container } = render(
+      <SelectableTile id="selectable-tile-1" onChange={onChange}>
+        Option 1
+      </SelectableTile>
+    );
+    const tile = container.firstChild;
+    await userEvent.click(tile);
+    expect(onChange).toHaveBeenCalled();
+    expect(onChange).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: 'click',
+      }),
+      true,
+      'selectable-tile-1'
+    );
+    // should de-select when user press enter key on selected tile.
+    tile.focus();
+    await userEvent.keyboard('[Enter]');
+    expect(onChange).toHaveBeenCalled();
+    expect(onChange).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: 'keydown',
+      }),
+      false,
+      'selectable-tile-1'
+    );
   });
 
   it('should call onKeyDown', async () => {

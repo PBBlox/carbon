@@ -1,12 +1,12 @@
 /**
- * Copyright IBM Corp. 2016, 2023
+ * Copyright IBM Corp. 2016, 2025
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
 import PropTypes from 'prop-types';
-import React, { useLayoutEffect, useState, ReactNode, useRef } from 'react';
+import React, { useLayoutEffect, useState, useRef, MouseEvent } from 'react';
 import classNames from 'classnames';
 import { useId } from '../../internal/useId';
 import { usePrefix } from '../../internal/usePrefix';
@@ -28,13 +28,12 @@ export interface SelectableTagBaseProps {
   disabled?: boolean;
 
   /**
-   * Specify the id for the selectabletag.
+   * Specify the id for the selectable tag.
    */
   id?: string;
 
   /**
-   * Optional prop to render a custom icon.
-   * Can be a React component class
+   * A component used to render an icon.
    */
   renderIcon?: React.ElementType;
 
@@ -46,7 +45,7 @@ export interface SelectableTagBaseProps {
   /**
    * Provide an optional function to be called when the tag is clicked.
    */
-  onClick?: (e: Event) => void;
+  onClick?: (e: MouseEvent<HTMLButtonElement>) => void;
 
   /**
    * Specify the state of the selectable tag.
@@ -83,7 +82,7 @@ const SelectableTag = <T extends React.ElementType>({
   ...other
 }: SelectableTagProps<T>) => {
   const prefix = usePrefix();
-  const tagRef = useRef<HTMLElement>();
+  const tagRef = useRef<HTMLButtonElement>(null);
   const tagId = id || `tag-${useId()}`;
   const [selectedTag, setSelectedTag] = useState(selected);
   const tagClasses = classNames(`${prefix}--tag--selectable`, className, {
@@ -103,7 +102,7 @@ const SelectableTag = <T extends React.ElementType>({
     `${prefix}--tag-label-tooltip`
   );
 
-  const handleClick = (e: Event) => {
+  const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
     setSelectedTag(!selectedTag);
     onChange?.(!selectedTag);
     onClick?.(e);
@@ -170,8 +169,7 @@ SelectableTag.propTypes = {
   id: PropTypes.string,
 
   /**
-   * Optional prop to render a custom icon.
-   * Can be a React component class
+   * A component used to render an icon.
    */
   renderIcon: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 

@@ -3,6 +3,7 @@
 packages/*/build/
 packages/*/examples/*/build/
 es
+es-custom
 lib
 dist
 umd
@@ -61,3 +62,7 @@ blob-report
 
 # Local token
 .env
+
+# nx local buiild cache
+.nx/cache
+.nx/workspace-data
